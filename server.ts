@@ -14,6 +14,32 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
 
+  // Auth Middleware & Routes
+  app.post('/api/login', (req, res) => {
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+    if (req.body.password === ADMIN_PASSWORD) {
+      res.cookie('kahin_token', 'authenticated', { httpOnly: true, path: '/' });
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ error: 'Invalid password' });
+    }
+  });
+
+  app.post('/api/logout', (req, res) => {
+    res.clearCookie('kahin_token', { path: '/' });
+    res.json({ success: true });
+  });
+
+  app.use('/api', (req, res, next) => {
+    if (req.path === '/login' || req.path === '/logout') return next();
+    const cookies = req.headers.cookie || '';
+    if (cookies.includes('kahin_token=authenticated')) {
+      next();
+    } else {
+      res.status(401).json({ error: 'Unauthorized' });
+    }
+  });
+
   // API Routes
   
   // Books
