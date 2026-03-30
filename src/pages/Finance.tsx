@@ -93,8 +93,8 @@ export default function Finance() {
         </form>
       </div>
 
-      <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 overflow-hidden">
-        <table className="w-full text-left border-collapse">
+      <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[600px]">
           <thead>
             <tr className="bg-gray-50 dark:bg-black border-b border-gray-200 dark:border-zinc-800 text-sm">
               <th className="p-4 font-medium text-gray-500 dark:text-gray-400">{t('Date')}</th>

@@ -54,9 +54,9 @@ export default function Fitness() {
       <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 overflow-hidden">
         <ul className="divide-y divide-gray-100 dark:divide-gray-700">
           {logs.map((log: any) => (
-            <li key={log.id} className="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+            <li key={log.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors gap-4">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-full text-yellow-500">
+                <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-full text-yellow-500 shrink-0">
                   <Activity className="w-5 h-5" />
                 </div>
                 <div>
@@ -64,7 +64,7 @@ export default function Fitness() {
                   <p className="text-sm text-gray-600 dark:text-gray-400">{log.reps_duration}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
                 <span className="text-sm font-medium text-gray-500">{log.date}</span>
                 <button onClick={() => handleDelete(log.id)} className="p-2 text-gray-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
               </div>

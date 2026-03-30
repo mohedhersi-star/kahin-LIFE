@@ -148,12 +148,12 @@ export default function Islamic() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Tabs */}
-      <div className="flex space-x-2 border-b border-gray-200 dark:border-zinc-800 pb-2">
+      <div className="flex space-x-2 border-b border-gray-200 dark:border-zinc-800 pb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
         {['quran', 'books', 'dhikr'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-t-lg font-medium transition-colors ${
+            className={`px-4 py-2 rounded-t-lg font-medium transition-colors shrink-0 ${
               activeTab === tab 
                 ? 'bg-yellow-400 text-black border-b-2 border-black dark:border-white' 
                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
@@ -271,7 +271,7 @@ export default function Islamic() {
                 )}
               </div>
             ))}
-            {books.length === 0 && <div className="col-span-full p-8 text-center text-gray-500">No books tracked yet.</div>}
+            {books.length === 0 && <div className="col-span-1 md:col-span-2 lg:col-span-3 p-8 text-center text-gray-500">No books tracked yet.</div>}
           </div>
         </div>
       )}
