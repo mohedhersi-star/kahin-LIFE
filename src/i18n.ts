@@ -1,0 +1,147 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+const resources = {
+  en: {
+    translation: {
+      "Dashboard": "Dashboard",
+      "Books": "Books",
+      "Tasks": "Tasks",
+      "Finance": "Finance",
+      "Goals": "Goals",
+      "Habits": "Habits",
+      "Islamic Tracker": "Islamic Tracker",
+      "Journal": "Journal",
+      "Fitness": "Fitness",
+      "Water": "Water",
+      "Welcome": "Welcome to Kahin Life",
+      "Add": "Add",
+      "Save": "Save",
+      "Delete": "Delete",
+      "Edit": "Edit",
+      "Title": "Title",
+      "Author": "Author",
+      "Category": "Category",
+      "Progress": "Progress",
+      "Notes": "Notes",
+      "Priority": "Priority",
+      "Done": "Done",
+      "Amount": "Amount",
+      "Description": "Description",
+      "Date": "Date",
+      "Type": "Type",
+      "Target": "Target",
+      "Name": "Name",
+      "Consistency": "Consistency",
+      "Value": "Value",
+      "Content": "Content",
+      "Exercise": "Exercise",
+      "Reps/Duration": "Reps/Duration",
+      "Intake": "Intake",
+      "Income": "Income",
+      "Expense": "Expense",
+      "High": "High",
+      "Medium": "Medium",
+      "Low": "Low"
+    }
+  },
+  so: {
+    translation: {
+      "Dashboard": "Muraayadda",
+      "Books": "Buugaagta",
+      "Tasks": "Hawlaha",
+      "Finance": "Maaliyadda",
+      "Goals": "Hadafyada",
+      "Habits": "Caadooyinka",
+      "Islamic Tracker": "Diiwaanka Islaamka",
+      "Journal": "Xusuus-qorka",
+      "Fitness": "Jirdhiska",
+      "Water": "Biyaha",
+      "Welcome": "Ku soo dhawow Kahin Life",
+      "Add": "Kudar",
+      "Save": "Keydi",
+      "Delete": "Tirtir",
+      "Edit": "Wax ka bedel",
+      "Title": "Cinwaanka",
+      "Author": "Qoraaga",
+      "Category": "Qaybta",
+      "Progress": "Horumarka",
+      "Notes": "Xusuusin",
+      "Priority": "Mudnaanta",
+      "Done": "La sameeyay",
+      "Amount": "Cadadka",
+      "Description": "Faahfaahin",
+      "Date": "Taariikhda",
+      "Type": "Nooca",
+      "Target": "Hadafka",
+      "Name": "Magaca",
+      "Consistency": "Joogteynta",
+      "Value": "Qiimaha",
+      "Content": "Nuxurka",
+      "Exercise": "Jimicsiga",
+      "Reps/Duration": "Tirada/Waqtiga",
+      "Intake": "Qaadashada",
+      "Income": "Dakhliga",
+      "Expense": "Kharashka",
+      "High": "Sare",
+      "Medium": "Dhexdhexaad",
+      "Low": "Hoose"
+    }
+  },
+  ar: {
+    translation: {
+      "Dashboard": "لوحة القيادة",
+      "Books": "الكتب",
+      "Tasks": "المهام",
+      "Finance": "المالية",
+      "Goals": "الأهداف",
+      "Habits": "العادات",
+      "Islamic Tracker": "المتتبع الإسلامي",
+      "Journal": "اليوميات",
+      "Fitness": "اللياقة البدنية",
+      "Water": "الماء",
+      "Welcome": "مرحبًا بك في Kahin Life",
+      "Add": "إضافة",
+      "Save": "حفظ",
+      "Delete": "حذف",
+      "Edit": "تعديل",
+      "Title": "العنوان",
+      "Author": "المؤلف",
+      "Category": "الفئة",
+      "Progress": "التقدم",
+      "Notes": "ملاحظات",
+      "Priority": "الأولوية",
+      "Done": "تم",
+      "Amount": "المبلغ",
+      "Description": "الوصف",
+      "Date": "التاريخ",
+      "Type": "النوع",
+      "Target": "الهدف",
+      "Name": "الاسم",
+      "Consistency": "الاستمرارية",
+      "Value": "القيمة",
+      "Content": "المحتوى",
+      "Exercise": "التمرين",
+      "Reps/Duration": "التكرار/المدة",
+      "Intake": "الاستهلاك",
+      "Income": "الدخل",
+      "Expense": "المصروفات",
+      "High": "عالي",
+      "Medium": "متوسط",
+      "Low": "منخفض"
+    }
+  }
+};
+
+i18n
+  .use(initReactI18next)
+  .init({
+    resources,
+    lng: "en",
+    fallbackLng: "en",
+    interpolation: {
+      escapeValue: false
+    }
+  });
+
+export default i18n;
