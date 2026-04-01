@@ -16,9 +16,14 @@ async function startServer() {
 
   // Auth Middleware & Routes
   app.post('/api/login', (req, res) => {
-    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '@MOHED3126';
     if (req.body.password === ADMIN_PASSWORD) {
-      res.cookie('kahin_token', 'authenticated', { httpOnly: true, path: '/' });
+      res.cookie('kahin_token', 'authenticated', { 
+        httpOnly: true, 
+        path: '/',
+        secure: true,
+        sameSite: 'none'
+      });
       res.json({ success: true });
     } else {
       res.status(401).json({ error: 'Invalid password' });
@@ -26,7 +31,11 @@ async function startServer() {
   });
 
   app.post('/api/logout', (req, res) => {
-    res.clearCookie('kahin_token', { path: '/' });
+    res.clearCookie('kahin_token', { 
+      path: '/',
+      secure: true,
+      sameSite: 'none'
+    });
     res.json({ success: true });
   });
 
