@@ -6,6 +6,7 @@ import {
   Target, Repeat, Moon, Book, Activity, Droplet,
   Sun, Globe, LogOut, Menu, X
 } from 'lucide-react';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function Layout() {
   const { t, i18n } = useTranslation();
@@ -30,7 +31,7 @@ export default function Layout() {
   };
 
   const handleLogout = async () => {
-    await fetch('/api/logout', { method: 'POST' });
+    await apiFetch('/api/logout', { method: 'POST' });
     localStorage.removeItem('isLoggedIn');
     window.location.href = '/login';
   };

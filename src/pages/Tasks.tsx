@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2, Edit2, CheckCircle, Circle } from 'lucide-react';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function Tasks() {
   const { t } = useTranslation();
@@ -13,7 +14,7 @@ export default function Tasks() {
   }, []);
 
   const fetchTasks = async () => {
-    const res = await fetch('/api/tasks');
+    const res = await apiFetch('/api/tasks');
     const data = await res.json();
     setTasks(data);
   };
@@ -21,13 +22,13 @@ export default function Tasks() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingId) {
-      await fetch(`/api/tasks/${editingId}`, {
+      await apiFetch(`/api/tasks/${editingId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
     } else {
-      await fetch('/api/tasks', {
+      await apiFetch('/api/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -39,7 +40,7 @@ export default function Tasks() {
   };
 
   const handleDelete = async (id: number) => {
-    await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/tasks/${id}`, { method: 'DELETE' });
     fetchTasks();
   };
 
@@ -49,7 +50,7 @@ export default function Tasks() {
   };
 
   const toggleDone = async (task: any) => {
-    await fetch(`/api/tasks/${task.id}`, {
+    await apiFetch(`/api/tasks/${task.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...task, done: !task.done })

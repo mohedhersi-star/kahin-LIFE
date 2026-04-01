@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2, Activity } from 'lucide-react';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function Fitness() {
   const { t } = useTranslation();
@@ -12,14 +13,14 @@ export default function Fitness() {
   }, []);
 
   const fetchLogs = async () => {
-    const res = await fetch('/api/fitness');
+    const res = await apiFetch('/api/fitness');
     const data = await res.json();
     setLogs(data);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch('/api/fitness', {
+    await apiFetch('/api/fitness', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
@@ -29,7 +30,7 @@ export default function Fitness() {
   };
 
   const handleDelete = async (id: number) => {
-    await fetch(`/api/fitness/${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/fitness/${id}`, { method: 'DELETE' });
     fetchLogs();
   };
 

@@ -47,7 +47,8 @@ async function startServer() {
   app.use('/api', (req, res, next) => {
     if (req.path === '/login' || req.path === '/logout') return next();
     const cookies = req.headers.cookie || '';
-    if (cookies.includes('kahin_token=authenticated')) {
+    const authHeader = req.headers.authorization || '';
+    if (cookies.includes('kahin_token=authenticated') || authHeader === 'Bearer authenticated') {
       next();
     } else {
       res.status(401).json({ error: 'Unauthorized' });

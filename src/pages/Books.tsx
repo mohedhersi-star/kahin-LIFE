@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2, Edit2 } from 'lucide-react';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function Books() {
   const { t } = useTranslation();
@@ -13,7 +14,7 @@ export default function Books() {
   }, []);
 
   const fetchBooks = async () => {
-    const res = await fetch('/api/books');
+    const res = await apiFetch('/api/books');
     const data = await res.json();
     setBooks(data);
   };
@@ -21,13 +22,13 @@ export default function Books() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingId) {
-      await fetch(`/api/books/${editingId}`, {
+      await apiFetch(`/api/books/${editingId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
     } else {
-      await fetch('/api/books', {
+      await apiFetch('/api/books', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -39,7 +40,7 @@ export default function Books() {
   };
 
   const handleDelete = async (id: number) => {
-    await fetch(`/api/books/${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/books/${id}`, { method: 'DELETE' });
     fetchBooks();
   };
 

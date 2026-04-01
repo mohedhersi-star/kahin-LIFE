@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2, Droplet } from 'lucide-react';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function Water() {
   const { t } = useTranslation();
@@ -12,14 +13,14 @@ export default function Water() {
   }, []);
 
   const fetchLogs = async () => {
-    const res = await fetch('/api/water');
+    const res = await apiFetch('/api/water');
     const data = await res.json();
     setLogs(data);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch('/api/water', {
+    await apiFetch('/api/water', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
@@ -29,7 +30,7 @@ export default function Water() {
   };
 
   const handleDelete = async (id: number) => {
-    await fetch(`/api/water/${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/water/${id}`, { method: 'DELETE' });
     fetchLogs();
   };
 

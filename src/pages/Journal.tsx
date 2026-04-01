@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2, Calendar } from 'lucide-react';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function Journal() {
   const { t } = useTranslation();
@@ -12,14 +13,14 @@ export default function Journal() {
   }, []);
 
   const fetchEntries = async () => {
-    const res = await fetch('/api/journal');
+    const res = await apiFetch('/api/journal');
     const data = await res.json();
     setEntries(data);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch('/api/journal', {
+    await apiFetch('/api/journal', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
@@ -29,7 +30,7 @@ export default function Journal() {
   };
 
   const handleDelete = async (id: number) => {
-    await fetch(`/api/journal/${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/journal/${id}`, { method: 'DELETE' });
     fetchEntries();
   };
 

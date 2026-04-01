@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2, Book, Heart, Edit2, Target } from 'lucide-react';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function Islamic() {
   const { t } = useTranslation();
@@ -26,24 +27,24 @@ export default function Islamic() {
   }, []);
 
   const fetchQuran = async () => {
-    const res = await fetch('/api/quran');
+    const res = await apiFetch('/api/quran');
     setQuranLogs(await res.json());
   };
 
   const fetchBooks = async () => {
-    const res = await fetch('/api/islamic-books');
+    const res = await apiFetch('/api/islamic-books');
     setBooks(await res.json());
   };
 
   const fetchDhikr = async () => {
-    const res = await fetch('/api/dhikr');
+    const res = await apiFetch('/api/dhikr');
     setDhikrLogs(await res.json());
   };
 
   // --- Quran Handlers ---
   const handleQuranSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch('/api/quran', {
+    await apiFetch('/api/quran', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(quranForm)
@@ -53,7 +54,7 @@ export default function Islamic() {
   };
 
   const deleteQuran = async (id: number) => {
-    await fetch(`/api/quran/${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/quran/${id}`, { method: 'DELETE' });
     fetchQuran();
   };
 
@@ -61,13 +62,13 @@ export default function Islamic() {
   const handleBookSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingBookId) {
-      await fetch(`/api/islamic-books/${editingBookId}`, {
+      await apiFetch(`/api/islamic-books/${editingBookId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookForm)
       });
     } else {
-      await fetch('/api/islamic-books', {
+      await apiFetch('/api/islamic-books', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookForm)
@@ -84,14 +85,14 @@ export default function Islamic() {
   };
 
   const deleteBook = async (id: number) => {
-    await fetch(`/api/islamic-books/${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/islamic-books/${id}`, { method: 'DELETE' });
     fetchBooks();
   };
 
   // --- Dhikr Handlers ---
   const handleDhikrSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch('/api/dhikr', {
+    await apiFetch('/api/dhikr', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dhikrForm)
@@ -101,7 +102,7 @@ export default function Islamic() {
   };
 
   const deleteDhikr = async (id: number) => {
-    await fetch(`/api/dhikr/${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/dhikr/${id}`, { method: 'DELETE' });
     fetchDhikr();
   };
 

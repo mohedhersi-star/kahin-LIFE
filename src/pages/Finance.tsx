@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2, TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function Finance() {
   const { t } = useTranslation();
@@ -12,14 +13,14 @@ export default function Finance() {
   }, []);
 
   const fetchTransactions = async () => {
-    const res = await fetch('/api/finance');
+    const res = await apiFetch('/api/finance');
     const data = await res.json();
     setTransactions(data);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch('/api/finance', {
+    await apiFetch('/api/finance', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
@@ -29,7 +30,7 @@ export default function Finance() {
   };
 
   const handleDelete = async (id: number) => {
-    await fetch(`/api/finance/${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/finance/${id}`, { method: 'DELETE' });
     fetchTransactions();
   };
 

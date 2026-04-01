@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -16,10 +17,10 @@ export default function Dashboard() {
     const fetchStats = async () => {
       try {
         const [tasksRes, booksRes, financeRes, waterRes] = await Promise.all([
-          fetch('/api/tasks'),
-          fetch('/api/books'),
-          fetch('/api/finance'),
-          fetch('/api/water')
+          apiFetch('/api/tasks'),
+          apiFetch('/api/books'),
+          apiFetch('/api/finance'),
+          apiFetch('/api/water')
         ]);
         
         const tasks = await tasksRes.json();

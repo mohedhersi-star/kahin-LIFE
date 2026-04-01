@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2, Edit2, Repeat } from 'lucide-react';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function Habits() {
   const { t } = useTranslation();
@@ -13,7 +14,7 @@ export default function Habits() {
   }, []);
 
   const fetchHabits = async () => {
-    const res = await fetch('/api/habits');
+    const res = await apiFetch('/api/habits');
     const data = await res.json();
     setHabits(data);
   };
@@ -21,13 +22,13 @@ export default function Habits() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingId) {
-      await fetch(`/api/habits/${editingId}`, {
+      await apiFetch(`/api/habits/${editingId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
     } else {
-      await fetch('/api/habits', {
+      await apiFetch('/api/habits', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -39,7 +40,7 @@ export default function Habits() {
   };
 
   const handleDelete = async (id: number) => {
-    await fetch(`/api/habits/${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/habits/${id}`, { method: 'DELETE' });
     fetchHabits();
   };
 
@@ -49,7 +50,7 @@ export default function Habits() {
   };
 
   const incrementConsistency = async (habit: any) => {
-    await fetch(`/api/habits/${habit.id}`, {
+    await apiFetch(`/api/habits/${habit.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...habit, consistency: habit.consistency + 1 })

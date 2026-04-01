@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2, Edit2, Target } from 'lucide-react';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function Goals() {
   const { t } = useTranslation();
@@ -13,7 +14,7 @@ export default function Goals() {
   }, []);
 
   const fetchGoals = async () => {
-    const res = await fetch('/api/goals');
+    const res = await apiFetch('/api/goals');
     const data = await res.json();
     setGoals(data);
   };
@@ -21,13 +22,13 @@ export default function Goals() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingId) {
-      await fetch(`/api/goals/${editingId}`, {
+      await apiFetch(`/api/goals/${editingId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
     } else {
-      await fetch('/api/goals', {
+      await apiFetch('/api/goals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -39,7 +40,7 @@ export default function Goals() {
   };
 
   const handleDelete = async (id: number) => {
-    await fetch(`/api/goals/${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/goals/${id}`, { method: 'DELETE' });
     fetchGoals();
   };
 
