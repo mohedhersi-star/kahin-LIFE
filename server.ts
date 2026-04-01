@@ -16,8 +16,13 @@ async function startServer() {
 
   // Auth Middleware & Routes
   app.post('/api/login', (req, res) => {
-    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '@MOHED3126';
-    if (req.body.password === ADMIN_PASSWORD) {
+    // Hardcoding the password to ensure environment variables don't override it
+    const ADMIN_PASSWORD = '@MOHED3126';
+    
+    // Using trim() to prevent mobile keyboards from adding accidental spaces
+    const submittedPassword = req.body.password ? req.body.password.trim() : '';
+    
+    if (submittedPassword === ADMIN_PASSWORD) {
       res.cookie('kahin_token', 'authenticated', { 
         httpOnly: true, 
         path: '/',
