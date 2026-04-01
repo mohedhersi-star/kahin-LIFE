@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
-import { Lock, Eye, EyeOff, Mail } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Lock, Eye, EyeOff, Mail, Loader2 } from 'lucide-react';
 import { apiFetch } from '../lib/apiFetch';
 
 export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    
     try {
       const res = await apiFetch('/api/login', {
         method: 'POST',
@@ -18,17 +24,20 @@ export default function Login() {
       
       if (res.ok) {
         localStorage.setItem('isLoggedIn', 'true');
-        window.location.href = '/';
+        // Use React Router navigation instead of hard reload for better mobile support
+        navigate('/', { replace: true });
       } else {
         setError('Invalid password');
       }
     } catch (err) {
-      setError('Login failed');
+      setError('Login failed. Please check connection.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-end sm:justify-center bg-gray-50 dark:bg-black">
+    <div className="min-h-[100dvh] flex flex-col justify-end sm:justify-center bg-gray-50 dark:bg-black">
       <div className="w-full p-8 bg-white dark:bg-zinc-900 rounded-t-[2rem] sm:rounded-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.05)] sm:shadow-xl border-t sm:border border-gray-100 dark:border-zinc-800 sm:max-w-md sm:mx-auto">
         <div className="flex flex-col items-center mb-8 pt-2">
           <div className="w-12 h-1 bg-gray-200 dark:bg-zinc-700 rounded-full mb-8 sm:hidden"></div>
@@ -52,11 +61,13 @@ export default function Login() {
               autoCorrect="off"
               spellCheck={false}
               autoComplete="current-password"
+              disabled={isLoading}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              disabled={isLoading}
             >
               {showPassword ? <EyeOff className="w-6 h-6" /> : <Eye className="w-6 h-6" />}
             </button>
@@ -64,9 +75,10 @@ export default function Login() {
           {error && <p className="text-red-500 text-sm text-center font-medium">{error}</p>}
           <button
             type="submit"
-            className="w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-black font-bold rounded-xl transition-colors text-lg shadow-sm"
+            disabled={isLoading}
+            className="w-full py-4 bg-yellow-400 hover:bg-yellow-500 disabled:bg-yellow-200 disabled:cursor-not-allowed text-black font-bold rounded-xl transition-colors text-lg shadow-sm flex items-center justify-center"
           >
-            Unlock
+            {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Unlock'}
           </button>
         </form>
 
