@@ -47,6 +47,10 @@ export default function Login() {
               placeholder="Password"
               className="w-full p-3 pr-12 border border-gray-300 dark:border-zinc-700 rounded-lg dark:bg-zinc-800 dark:text-white focus:ring-2 focus:ring-yellow-400 outline-none"
               required
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              autoComplete="current-password"
             />
             <button
               type="button"

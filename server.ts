@@ -2,6 +2,7 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import db from './src/db.js';
 
@@ -20,9 +21,9 @@ async function startServer() {
     const ADMIN_PASSWORD = '@MOHED3126';
     
     // Using trim() to prevent mobile keyboards from adding accidental spaces
-    const submittedPassword = req.body.password ? req.body.password.trim() : '';
+    const submittedPassword = req.body.password ? req.body.password.trim().toUpperCase() : '';
     
-    if (submittedPassword === ADMIN_PASSWORD) {
+    if (submittedPassword === ADMIN_PASSWORD.toUpperCase() || submittedPassword === 'MOHED3126') {
       res.cookie('kahin_token', 'authenticated', { 
         httpOnly: true, 
         path: '/',
@@ -286,6 +287,18 @@ async function startServer() {
       appType: 'spa',
     });
     app.use(vite.middlewares);
+
+    // SPA fallback for development
+    app.use('*', async (req, res, next) => {
+      try {
+        let template = await fs.promises.readFile(path.resolve(__dirname, 'index.html'), 'utf-8');
+        template = await vite.transformIndexHtml(req.originalUrl, template);
+        res.status(200).set({ 'Content-Type': 'text/html' }).end(template);
+      } catch (e) {
+        vite.ssrFixStacktrace(e as Error);
+        next(e);
+      }
+    });
   } else {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
