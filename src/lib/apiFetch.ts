@@ -11,10 +11,5 @@ export async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Pr
   
   const response = await fetch(input, options);
   
-  if (response.status === 401 && url !== '/api/login') {
-    localStorage.removeItem('isLoggedIn');
-    window.location.href = '/login';
-  }
-  
   return response;
 }
