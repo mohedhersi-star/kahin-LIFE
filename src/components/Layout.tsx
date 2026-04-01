@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { 
   LayoutDashboard, BookOpen, CheckSquare, DollarSign, 
   Target, Repeat, Moon, Book, Activity, Droplet,
-  Sun, Globe, Menu, X
+  Sun, Globe, LogOut, Menu, X
 } from 'lucide-react';
 import { apiFetch } from '../lib/apiFetch';
 
@@ -28,6 +28,12 @@ export default function Layout() {
     const nextIndex = (currentIndex + 1) % langs.length;
     i18n.changeLanguage(langs[nextIndex]);
     document.documentElement.dir = langs[nextIndex] === 'ar' ? 'rtl' : 'ltr';
+  };
+
+  const handleLogout = async () => {
+    await apiFetch('/api/logout', { method: 'POST' });
+    localStorage.removeItem('isLoggedIn');
+    window.location.href = '/login';
   };
 
   const navItems = [
@@ -117,6 +123,13 @@ export default function Layout() {
               title="Toggle Dark Mode"
             >
               {darkMode ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-gray-600 dark:text-gray-300" />}
+            </button>
+            <button 
+              onClick={handleLogout}
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 text-red-500"
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5" />
             </button>
           </div>
         </header>
