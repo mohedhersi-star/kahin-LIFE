@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { 
   LayoutDashboard, BookOpen, CheckSquare, DollarSign, 
   Target, Repeat, Moon, Book, Activity, Droplet,
-  Sun, Globe, Menu, X
+  Sun, Globe, Menu, X, GraduationCap
 } from 'lucide-react';
 import { apiFetch } from '../lib/apiFetch';
 
@@ -32,6 +32,7 @@ export default function Layout() {
 
   const navItems = [
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/learning', label: 'Learning', icon: GraduationCap },
     { path: '/books', label: 'Books', icon: BookOpen },
     { path: '/tasks', label: 'Tasks', icon: CheckSquare },
     { path: '/finance', label: 'Finance', icon: DollarSign },

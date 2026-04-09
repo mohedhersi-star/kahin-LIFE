@@ -11,6 +11,7 @@ import Islamic from './pages/Islamic';
 import Journal from './pages/Journal';
 import Fitness from './pages/Fitness';
 import Water from './pages/Water';
+import Learning from './pages/Learning';
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="journal" element={<Journal />} />
           <Route path="fitness" element={<Fitness />} />
           <Route path="water" element={<Water />} />
+          <Route path="learning" element={<Learning />} />
         </Route>
       </Routes>
     </BrowserRouter>

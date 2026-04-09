@@ -4,9 +4,29 @@ import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import multer from 'multer';
+import pdfParse from 'pdf-parse';
 import db from './src/db.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Setup multer for PDF uploads
+const uploadDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir)
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, uniqueSuffix + '-' + file.originalname)
+  }
+});
+
+const upload = multer({ storage: storage });
 
 async function startServer() {
   const app = express();
@@ -14,6 +34,7 @@ async function startServer() {
 
   app.use(cors());
   app.use(express.json());
+  app.use('/uploads', express.static(uploadDir));
 
   // API Routes
   
@@ -236,6 +257,135 @@ async function startServer() {
   });
   app.delete('/api/water/:id', (req, res) => {
     db.prepare('DELETE FROM water WHERE id = ?').run(req.params.id);
+    res.json({ success: true });
+  });
+
+  // Learning
+  app.get('/api/learning/categories', (req, res) => {
+    const categories = db.prepare('SELECT * FROM learning_categories').all();
+    const subcategories = db.prepare('SELECT * FROM learning_subcategories').all();
+    
+    const result = categories.map((cat: any) => ({
+      ...cat,
+      subcategories: subcategories.filter((sub: any) => sub.category_id === cat.id)
+    }));
+    
+    res.json(result);
+  });
+
+  app.get('/api/learning/content/:subcategoryId', (req, res) => {
+    const content = db.prepare('SELECT * FROM learning_content WHERE subcategory_id = ? ORDER BY id DESC').all(req.params.subcategoryId);
+    res.json(content);
+  });
+
+  app.post('/api/learning/content', (req, res) => {
+    const { subcategory_id, title, description, is_bookmarked, revise_later } = req.body;
+    const stmt = db.prepare('INSERT INTO learning_content (subcategory_id, title, description, created_at, is_bookmarked, revise_later) VALUES (?, ?, ?, ?, ?, ?)');
+    const info = stmt.run(subcategory_id, title, description, new Date().toISOString(), is_bookmarked ? 1 : 0, revise_later ? 1 : 0);
+    res.json({ id: info.lastInsertRowid });
+  });
+
+  app.put('/api/learning/content/:id', (req, res) => {
+    const { title, description, is_bookmarked, revise_later } = req.body;
+    const stmt = db.prepare('UPDATE learning_content SET title = ?, description = ?, is_bookmarked = ?, revise_later = ? WHERE id = ?');
+    stmt.run(title, description, is_bookmarked ? 1 : 0, revise_later ? 1 : 0, req.params.id);
+    res.json({ success: true });
+  });
+
+  app.delete('/api/learning/content/:id', (req, res) => {
+    db.prepare('DELETE FROM learning_content WHERE id = ?').run(req.params.id);
+    res.json({ success: true });
+  });
+
+  app.get('/api/learning/goals', (req, res) => {
+    const goals = db.prepare('SELECT * FROM learning_goals ORDER BY id DESC').all();
+    res.json(goals);
+  });
+
+  app.post('/api/learning/goals', (req, res) => {
+    const { description, is_completed, date } = req.body;
+    const stmt = db.prepare('INSERT INTO learning_goals (description, is_completed, date) VALUES (?, ?, ?)');
+    const info = stmt.run(description, is_completed ? 1 : 0, date || new Date().toISOString().split('T')[0]);
+    res.json({ id: info.lastInsertRowid });
+  });
+
+  app.put('/api/learning/goals/:id', (req, res) => {
+    const { description, is_completed } = req.body;
+    const stmt = db.prepare('UPDATE learning_goals SET description = ?, is_completed = ? WHERE id = ?');
+    stmt.run(description, is_completed ? 1 : 0, req.params.id);
+    res.json({ success: true });
+  });
+
+  app.delete('/api/learning/goals/:id', (req, res) => {
+    db.prepare('DELETE FROM learning_goals WHERE id = ?').run(req.params.id);
+    res.json({ success: true });
+  });
+
+  // PDF Endpoints
+  app.get('/api/learning/pdfs', (req, res) => {
+    const pdfs = db.prepare('SELECT * FROM learning_pdfs ORDER BY id DESC').all();
+    res.json(pdfs);
+  });
+
+  app.post('/api/learning/pdfs', upload.single('pdf'), async (req, res) => {
+    try {
+      const { title, category, target_date, pages_per_day } = req.body;
+      const file = req.file;
+
+      if (!file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+
+      // Parse PDF to get total pages
+      const dataBuffer = fs.readFileSync(file.path);
+      const data = await pdfParse(dataBuffer);
+      const total_pages = data.numpages;
+
+      const stmt = db.prepare('INSERT INTO learning_pdfs (title, category, file_path, total_pages, current_page, target_date, pages_per_day, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+      const info = stmt.run(title, category, file.filename, total_pages, 0, target_date || null, pages_per_day || 0, new Date().toISOString());
+      
+      res.json({ id: info.lastInsertRowid, total_pages });
+    } catch (error) {
+      console.error('Error uploading PDF:', error);
+      res.status(500).json({ error: 'Failed to upload PDF' });
+    }
+  });
+
+  app.put('/api/learning/pdfs/:id', (req, res) => {
+    const { current_page, target_date, pages_per_day } = req.body;
+    const stmt = db.prepare('UPDATE learning_pdfs SET current_page = ?, target_date = ?, pages_per_day = ? WHERE id = ?');
+    stmt.run(current_page, target_date, pages_per_day, req.params.id);
+    res.json({ success: true });
+  });
+
+  app.delete('/api/learning/pdfs/:id', (req, res) => {
+    const pdf = db.prepare('SELECT file_path FROM learning_pdfs WHERE id = ?').get(req.params.id) as any;
+    if (pdf) {
+      const filePath = path.join(uploadDir, pdf.file_path);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+    db.prepare('DELETE FROM learning_pdf_notes WHERE pdf_id = ?').run(req.params.id);
+    db.prepare('DELETE FROM learning_pdfs WHERE id = ?').run(req.params.id);
+    res.json({ success: true });
+  });
+
+  // PDF Notes
+  app.get('/api/learning/pdfs/:id/notes', (req, res) => {
+    const notes = db.prepare('SELECT * FROM learning_pdf_notes WHERE pdf_id = ? ORDER BY page_number ASC').all(req.params.id);
+    res.json(notes);
+  });
+
+  app.post('/api/learning/pdfs/:id/notes', (req, res) => {
+    const { page_number, content } = req.body;
+    const stmt = db.prepare('INSERT INTO learning_pdf_notes (pdf_id, page_number, content, created_at) VALUES (?, ?, ?, ?)');
+    const info = stmt.run(req.params.id, page_number, content, new Date().toISOString());
+    res.json({ id: info.lastInsertRowid });
+  });
+
+  app.delete('/api/learning/pdf-notes/:id', (req, res) => {
+    db.prepare('DELETE FROM learning_pdf_notes WHERE id = ?').run(req.params.id);
     res.json({ success: true });
   });
 
