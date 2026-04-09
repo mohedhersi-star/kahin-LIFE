@@ -15,47 +15,6 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
 
-  // Auth Middleware & Routes
-  app.post('/api/login', (req, res) => {
-    // Hardcoding the password to ensure environment variables don't override it
-    const ADMIN_PASSWORD = '@MOHED3126';
-    
-    // Using trim() to prevent mobile keyboards from adding accidental spaces
-    const submittedPassword = req.body.password ? req.body.password.trim().toUpperCase() : '';
-    
-    if (submittedPassword === ADMIN_PASSWORD.toUpperCase() || submittedPassword === 'MOHED3126') {
-      res.cookie('kahin_token', 'authenticated', { 
-        httpOnly: true, 
-        path: '/',
-        secure: true,
-        sameSite: 'none'
-      });
-      res.json({ success: true });
-    } else {
-      res.status(401).json({ error: 'Invalid password' });
-    }
-  });
-
-  app.post('/api/logout', (req, res) => {
-    res.clearCookie('kahin_token', { 
-      path: '/',
-      secure: true,
-      sameSite: 'none'
-    });
-    res.json({ success: true });
-  });
-
-  app.use('/api', (req, res, next) => {
-    if (req.path === '/login' || req.path === '/logout') return next();
-    const cookies = req.headers.cookie || '';
-    const authHeader = req.headers.authorization || '';
-    if (cookies.includes('kahin_token=authenticated') || authHeader === 'Bearer authenticated') {
-      next();
-    } else {
-      res.status(401).json({ error: 'Unauthorized' });
-    }
-  });
-
   // API Routes
   
   // Books
